@@ -4,7 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"net"
-	"os"
+    "os"
+	"bufio"
 	"sort"
 )
 
@@ -67,17 +68,19 @@ func main() {
 		}
 	}()
 
-	for i := startPort; i <= endPort; i++ {
-		port := <-results
+    stdout := bufio.NewWriter(os.Stdout)
+    for i := startPort; i <= endPort; i++ {
+        port := <-results
 		if port != -1 {
 			openports = append(openports, port)
 		}
-		fmt.Printf("[host:%s] %d/%d ports scanned \r",
-			host, i, 1+endPort-startPort)
+	   fmt.Fprintf(stdout, "%s - %d/%d ports scanned\r",
+			host, 1+i-startPort, 1+endPort-startPort)
+        stdout.Flush()
 	}
 
 	sort.Ints(openports)
-	fmt.Printf("%d/%d ports open\n", len(openports), 1+endPort-startPort)
+	fmt.Printf("\n%d/%d ports open\n", len(openports), 1+endPort-startPort)
 	for _, port := range openports {
 		fmt.Printf("port %d open\n", port)
 	}
