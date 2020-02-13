@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"net"
-    "os"
-	"bufio"
+	"os"
 	"sort"
 )
 
@@ -68,15 +68,15 @@ func main() {
 		}
 	}()
 
-    stdout := bufio.NewWriter(os.Stdout)
-    for i := startPort; i <= endPort; i++ {
-        port := <-results
+	stdout := bufio.NewWriter(os.Stdout)
+	for i := startPort; i <= endPort; i++ {
+		port := <-results
 		if port != -1 {
 			openports = append(openports, port)
 		}
-	   fmt.Fprintf(stdout, "%s - %d/%d ports scanned\r",
+		fmt.Fprintf(stdout, "%s - %d/%d ports scanned\r",
 			host, 1+i-startPort, 1+endPort-startPort)
-        stdout.Flush()
+		stdout.Flush()
 	}
 
 	sort.Ints(openports)
